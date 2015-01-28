@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+  <style>
+  #first-hashtag, #second-hashtag{
+    font-family: Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 20pt;
+  }
+  #first-hashtag-ticker, #second-hashtag-ticker{
+    font-family: Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 20pt;
+    padding: 1em;
+  }
+  #first-hashtag-result, #second-hashtag-result{
+    font-family: Helvetica, sans-serif;
+    font-size: 15pt;
+    padding-bottom: 1em;
+  }
+  h1{
+    display: inline-block;
+    padding: .5em;
+    background-color: black;
+    color: white;
+    margin: .5em;
+  }
+  </style>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.3.2.js"></script>
+
+    <h1 id='start'>start</h1>
+    <h1 id='end'>end</h1>
+
+    <div id='first-hashtag'></div>
+    <div id='first-hashtag-ticker'>0</div>
+    <div id='first-hashtag-result'>Your hashtag</div>
+
+    <div id="second-hashtag"></div>
+    <div id='second-hashtag-ticker'>0</div>
+    <div id='second-hashtag-result'>Computer hashtag</div>
+
+    <script>
+    var first_hashtag = 'blizzard';
+    var second_hashtag = 'drone';
+
+    var num = $('#first-hashtag-ticker').text();
+
+    $('#first-hashtag').text(first_hashtag);
+    $('#second-hashtag').text(second_hashtag);
+
+$('#start').on('click', function(){
+    var socket = io.connect('http://localhost:4000');
+    socket.on('stream', function(tweet){
+        if (tweet.search(first_hashtag) != -1){
+            $('#first-hashtag-result').text(tweet);
+            var num = $('#first-hashtag-ticker').text();
+            num ++
+            $('#first-hashtag-ticker').text(num);
+        } else if (tweet.search(second_hashtag) != -1){
+            $('#second-hashtag-result').text(tweet);
+            var num = $('#second-hashtag-ticker').text();
+            num ++
+            $('#second-hashtag-ticker').text(num);
+        }
+    });
+});
+
+$('#end').on('click', function (){
+  // disconnect from connection
+
+});
+
+
+
+    </script>
+</body>
+</html>
