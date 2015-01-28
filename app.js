@@ -1,9 +1,9 @@
 var Twit = require('twit');
  var T = new Twit({
-    consumer_key:         'e8LpTUe4CHyriL73UTruyYC7X'
-  , consumer_secret:      'YIaQHT5mSsjXr9z8OTN2gsW7RGg0gHw6h92efaDijzAKe5HVZQ'
-  , access_token:         '2284092768-nszrfU9feD4OUBIlplFlQXSm1VQduS7D8XQkPpu'
-  , access_token_secret:  'LP2mMgtjtR6MuPoyyyiCQAZxx0us426seZA26H165hM64'
+    consumer_key: process.env.TWITTER_C_KEY
+  , consumer_secret: process.env.TWITTER_SECRET
+  , access_token: process.env.TWITTER_A_TOKEN
+  , access_token_secret: process.env.TWITTER_A_T_SECRET
 });
 
 var express = require('express');
@@ -11,20 +11,16 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
-app.get('/:hashtags', function (req, res) {
-		var params = req.params.hashtags
-		console.log(params);
-		var hashtags = params.split("+");
-		console.log(hashtags);
+app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
     io.sockets.on('connection', function (socket) {
-  		var stream = T.stream('statuses/filter', { track: hashtags })
+    	var first_hashtag = socket.handshake.query.first_hashtag;
+    	var second_hashtag = socket.handshake.query.second_hashtag;
+  		var stream = T.stream('statuses/filter', { track: [first_hashtag, second_hashtag] })
   	stream.on('tweet', function (tweet) {
-    io.sockets.emit('stream',tweet.text);
+			io.sockets.emit('stream',tweet.text);
   });
 });
 });
-
-
 
 server.listen(4000);
