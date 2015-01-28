@@ -11,6 +11,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
+app.set('port', (process.env.PORT || 5000))
+
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
     io.sockets.on('connection', function (socket) {
@@ -23,4 +25,6 @@ app.get('/', function (req, res) {
 });
 });
 
-server.listen(4000);
+app.listen(app.get('port'), function() {
+  console.log("Node app is running at localhost:" + app.get('port'))
+})
