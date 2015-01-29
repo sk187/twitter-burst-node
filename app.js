@@ -25,8 +25,8 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
     io.sockets.on('connection', function (socket) {
     	var first_hashtag = socket.handshake.query.first_hashtag;
-    	var second_hashtag = socket.handshake.query.second_hashtag;
-  		var stream = T.stream('statuses/filter', { track: [first_hashtag, second_hashtag] })
+    	// var second_hashtag = socket.handshake.query.second_hashtag;
+  		var stream = T.stream('statuses/filter', { track: [first_hashtag] })
   	stream.on('tweet', function (tweet) {
 			io.sockets.emit('stream',tweet.text);
   });
